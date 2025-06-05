@@ -1,12 +1,12 @@
 import random
 
-random_n = random.randint(1,100)
+answer = random.randint(1,100)
 #random_n = 7
 for i in range(5):
     cnt = cnt + 1
     input_line = int(input("1~100までの数"))
     print("入力された値",input_line)
-    if random_n == int(input_line):
+    if answer == int(input_line):
         print("正解")
         result = True
         break
@@ -19,7 +19,7 @@ for i in range(5):
                 print("もっと小さい数字ですが、だいぶ近い")   
 
 while True:
-    result = run_game()                
+    result = ()              
     
     if result:
         print("ゲームに勝ちました！あなたは{cnt}回目で正解しました") 
@@ -27,5 +27,10 @@ while True:
         print("ゲームに負けました。正解は{answer}")   
 
     ans = input("もう一度やりますか？(yes/no):")
-                                     
-    print("正解の値",random_n)
+
+    if ans == "yes":
+        print("お疲れ")
+        break
+
+
+    print("正解の値",answer)
