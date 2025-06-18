@@ -14,7 +14,28 @@ food = {"鳥刺し":"鹿児島",
         "きび団子":"岡山",
         "みかん":"愛媛",
         "うどん":"香川",
-        "フグ":"山口"}
+        "フグ":"山口",
+        "たまごパン":"長野",
+        "リンゴ":"青森",
+        "わんこそば":"岩手",
+        "唐揚げ":"大分",
+
+        }
+
 
 print("名産品の名前が表示され、それがどの都道府県の特産かを当てるクイズ")
+
+meisan,prefecture = randam.choice(list(food.items()))
+print(f"{meisan}はどこの都道府県の名産品？")
+
+answer = input("答え").strip()
+
+if answer == prefecture:
+    print("正解！！")
+else:
+    print(f"不正解")
+
+
+
+
 
