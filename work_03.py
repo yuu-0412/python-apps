@@ -24,15 +24,24 @@ food = {
 
 print("名産品の名前が表示され、それがどの都道府県の名産か当てるクイズ！\n")
 
-meisan, prefecture = random.choice(list(food.items()))  
-print(f"『{meisan}』はどこの都道府県の名産品？")
+while True:
+    meisan, prefecture = random.choice(list(food.items()))  
+    print(f"『{meisan}』はどこの都道府県の名産品？")
+    
+    answer = input("答え: ").strip()
+    
+    if answer == 'exit':
+            print("終了")
+            break
+    
+    if answer == prefecture:
+                print("🎉 正解！！")
 
-answer = input("答え: ").strip()
 
-if answer == prefecture:
-    print("🎉 正解！！")
-else:
-    print(f"❌ 不正解！正解は『{prefecture}』でした。")
+    else:
+           print(f"❌ 不正解！正解は『{prefecture}』でした。")            
+        
+        
 
 
 
