@@ -34,3 +34,4 @@ while True:
 
 
     print("正解の値",answer)
+
