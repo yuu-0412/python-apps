@@ -1,5 +1,11 @@
 import random
 import unicodedata
+import os
+from datetime import datetime
+
+# スコア保存用ファイル名
+score_file = "tiikawa_score.txt"
+max_score = 3  # 最大スコア
 
 # ===== キャラと手 =====
 characters2 = ["でかい鳥", "悪夢のゾウ", "じゃんけんまん", "醤油ダコ"]
@@ -33,15 +39,16 @@ def janken_phase():
     print(f"\n{enemy_character2} がじゃんけんを仕掛けてきた！")
 
     player_hand = input("じゃんけんぽん！（グー / チョキ / パー）: ")
-    if player_hand not in hands:
+    if player_hand not in hands:# 無効な手は即負け
         print("その手は出せないよ…（負け）")
         return False
 
     # プレイヤーの手に応じて敵の手を確率で決定
     lose_to_player = {"グー": "チョキ", "チョキ": "パー", "パー": "グー"}
     win_against_player = {"グー": "パー", "チョキ": "グー", "パー": "チョキ"}
-    draw_with_player = player_hand
+    draw_with_player = player_hand# あいこはそのまま
 
+    # 敵が出す手を重み付きでランダムに決定（勝ち45%、負け30%、あいこ25%）
     enemy_choices = (
         [lose_to_player[player_hand]] * 45 +
         [win_against_player[player_hand]] * 30 +
@@ -69,13 +76,13 @@ def quiz_phase():
     print("\n=== ちいかわクイズスタート！ ===")
     score = 0
     hint_tries = 3  # ヒントチャレンジ可能回数
-    questions = quiz.copy()
+    questions = quiz.copy() # クイズをコピーしてランダムに並べ替える
     random.shuffle(questions)
 
     for i, q in enumerate(questions, 1):
         print(f"\nQ{i}: {q['q']}")
         while True:
-            answer = input("答えは？（ヒントがほしいときは「ヒント」と入力）→ ").strip()
+            answer = input("答えは？（ヒントがほしいときは「ヒント」と入力してね)→ ").strip()
             if normalize(answer) == normalize("ヒント"):
                 if hint_tries == 0:
                     print("❗ ヒントはもう使い切っちゃったよ！")
@@ -85,7 +92,7 @@ def quiz_phase():
                     if won:
                         print(f"📝 ヒント: {q['hint']}")
                     else:
-                        hint_tries -= 1
+                        hint_tries -= 1 #負けたらヒント回数を減らす
                         print(f"😢 残念…ヒントは手に入らなかった（残り {hint_tries} 回）")
                 continue  # 再入力へ
             break  # ヒント以外の答え入力があれば次へ
@@ -100,17 +107,44 @@ def quiz_phase():
             print(f"❌ 不正解… 正解は「{q['a']}」だよ")
     return score
 
+def save_score(score):
+    # 過去スコア読み込み
+    if os.path.exists(score_file):
+        with open(score_file, "r", encoding="utf-8") as f:
+            scores = [line.strip() for line in f if line.strip()]
+    else:
+        scores = []
+
+    # 今回のスコアを先頭に追加
+    scores.insert(0, f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {score}/{len(quiz)}")
+
+    # 最新 max_score 件だけ残す
+    scores = scores[:max_score]
+
+    # ファイルに保存
+    with open(score_file, "w", encoding="utf-8") as f:
+        f.write("\n".join(scores))
+
+    # 追加: 保存後に履歴表示
+    print("\n📜 過去スコア履歴（最新3回）:")
+    for s in scores:
+        print(s)
+
 # ===== メイン関数 =====
 def main():
     print("🌟 ちいかわクイズ with じゃんけんヒント 🌟")
-    score = quiz_phase()
-    print(f"\n🎉 スコア: {score} / 3")
-    if score == 3:
+    score = total = quiz_phase()
+    print(f"\n🎉 スコア: {score} / {len(quiz)}")
+     # 結果に応じたコメント表示
+    if score == len(quiz):
         print("ちいかわマスター！すごい！！")
-    elif score == 2:
+    elif score == len(quiz) - 1:
         print("いい感じ！あと1問だった！")
     else:
         print("また挑戦してね〜")
+
+    # スコアを保存
+    save_score(score)    
 
 # ===== 実行部 =====
 if __name__ == "__main__":
