@@ -115,8 +115,11 @@ def save_score(score):
     else:
         scores = []
 
-    # 今回のスコアを先頭に追加
-    scores.insert(0, f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {score}/{len(quiz)}")
+    # 今回のスコアを追加
+    scores.append(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {score}/{len(quiz)}")
+
+    # スコアの数値部分を抽出して降順にソート
+    scores.sort(key=lambda x: int(x.split(" - ")[1].split("/")[0]), reverse=True)
 
     # 最新 max_score 件だけ残す
     scores = scores[:max_score]
@@ -125,8 +128,8 @@ def save_score(score):
     with open(score_file, "w", encoding="utf-8") as f:
         f.write("\n".join(scores))
 
-    # 追加: 保存後に履歴表示
-    print("\n📜 過去スコア履歴（最新3回）:")
+    # 保存後に履歴表示
+    print("\n📜 スコアランキング！！")
     for s in scores:
         print(s)
 
